@@ -1,15 +1,10 @@
 package main
 
 import (
-	"net/http"
-
-	"github.com/labstack/echo/v4"
+	"github.com/ardin2001/go_mini-capstone/routes"
 )
 
 func main() {
-	e := echo.New()
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
-	})
+	e := routes.StartApp()
 	e.Logger.Fatal(e.Start(":8000"))
 }
