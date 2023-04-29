@@ -24,63 +24,42 @@ func NewUserRepositories(db *gorm.DB) UserInterfaceR {
 }
 
 func (us *UserstructR) GetUsersRepository() ([]models.User, error) {
-	user := models.User{
-		Name:     "ardin",
-		Email:    "ardin@gmail.com",
-		Password: "27sb2d73b",
-	}
-	arr_users := []models.User{user, user, user}
+	var users []models.User
+	check := us.DB.Find(&users).Error
 
-	err := true
-	if err {
-		return arr_users, nil
+	if check != nil {
+		return nil, check
 	}
 
-	return nil, nil
+	return users, check
 }
 
 func (us *UserstructR) GetUserRepository(id string) (*models.User, error) {
-	user := models.User{
-		Name:     "ardin",
-		Email:    "ardin@gmail.com",
-		Password: "27sb2d73b",
+	var user models.User
+	check := us.DB.First(&user, id).Error
+	if check != nil {
+		return nil, check
 	}
-	err := true
-	if err {
-		return &user, nil
-	}
-
-	return nil, nil
+	return &user, check
 }
 
 func (us *UserstructR) DeleteRepository(id string) error {
-	err := true
-	if err {
-		return nil
-	}
-
-	return nil
+	check := us.DB.Delete(&models.User{}, &id).Error
+	return check
 }
 
 func (us *UserstructR) CreateRepository(user *models.User) (*models.User, error) {
-	err := true
-	if err {
-		return user, nil
+	check := us.DB.Save(user).Error
+	if check != nil {
+		return nil, check
 	}
-
-	return nil, nil
+	return user, check
 }
 
 func (us *UserstructR) UpdateRepository(userId *models.User, id string) (*models.User, error) {
-	user := models.User{
-		Name:     "ardin",
-		Email:    "ardin@gmail.com",
-		Password: "27sb2d73b",
+	check := us.DB.Save(userId).Error
+	if check != nil {
+		return nil, check
 	}
-	err := true
-	if err {
-		return &user, nil
-	}
-
-	return nil, nil
+	return userId, check
 }
