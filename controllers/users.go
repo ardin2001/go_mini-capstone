@@ -148,7 +148,7 @@ func (us *UserStructC) LoginUserController(c echo.Context) error {
 	}
 
 	token, _ := middlewares.CreateToken(user.ID, user.Nama, user.Role)
-	userresponse := models.UserResponse{ID: user.ID, Name: user.Nama, Email: user.Email, Role: user.Role, Token: token}
+	userresponse := models.UserResponse{ID: user.ID, Nama: user.Nama, Email: user.Email, Role: user.Role, Token: token}
 	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
 		Data:    userresponse,
 		Message: "Login successfull",

@@ -21,6 +21,10 @@ var (
 	userR = repositories.NewUserRepositories(db)
 	userS = services.NewUserServices(userR)
 	userC = controllers.NewUserControllers(userS)
+
+	productR = repositories.NewProductRepositories(db)
+	productS = services.NewProductServices(productR)
+	productC = controllers.NewProductControllers(productS)
 )
 
 func StartApp() *echo.Echo {
@@ -38,8 +42,12 @@ func StartApp() *echo.Echo {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
+
 	// root level, user tidak diperbolehkan akses semua data user
 	e.GET("/users", userC.GetUsersController, echojwt.WithConfig(config))
+	e.POST("/products", productC.CreateProductController, echojwt.WithConfig(config))
+	e.DELETE("/products/:id", productC.DeleteProductController, echojwt.WithConfig(config))
+	e.PUT("/products/:id", productC.UpdateProductController, echojwt.WithConfig(config))
 	// admin
 
 	e.POST("/users/login", userC.LoginUserController)
@@ -47,6 +55,9 @@ func StartApp() *echo.Echo {
 	e.POST("/users/registration", userC.CreateUserController)
 	e.DELETE("/users", userC.DeleteUserController, echojwt.WithConfig(config))
 	e.PUT("/users", userC.UpdateUserController, echojwt.WithConfig(config))
+
+	e.GET("/products/:id", productC.GetProductController, echojwt.WithConfig(config))
+	e.GET("/products", productC.GetProductsController, echojwt.WithConfig(config))
 
 	return e
 }

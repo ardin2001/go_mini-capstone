@@ -10,10 +10,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func CreateToken(userId uint, name string, role string) (string, error) {
+func CreateToken(userId uint, nama string, role string) (string, error) {
 	claims := &models.JwtCustomClaims{
 		ID:   userId,
-		Name: name,
+		Nama: nama,
 		Role: role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 100)),

@@ -78,9 +78,6 @@ func (u *UserStructS) UpdateService(userId *models.User, id string) (*models.Use
 	if userId.No_HP != "" {
 		getUserId.No_HP = userId.No_HP
 	}
-	if userId.Alamat != "" {
-		getUserId.Alamat = userId.Alamat
-	}
 
 	user, err := u.userR.UpdateRepository(getUserId, id)
 	if err != nil {

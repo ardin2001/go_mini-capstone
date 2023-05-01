@@ -14,4 +14,5 @@ func UserMigrate() {
 		return
 	}
 	DB.AutoMigrate(&models.User{})
+	DB.AutoMigrate(&models.Product{})
 }
