@@ -42,6 +42,10 @@ func (ps *ProductStructS) GetProductService(id string) (*models.Product, error) 
 }
 
 func (ps *ProductStructS) CreateProductService(product *models.Product) (*models.Product, error) {
+	if product.Status != "tersedia" {
+		product.Status = "tersedia"
+	}
+
 	productR, err := ps.productR.CreateProductRepository(product)
 	if err != nil {
 		return nil, err
@@ -63,10 +67,10 @@ func (ps *ProductStructS) UpdateProductService(productId *models.Product, id str
 	if productId.Deskripsi != "" {
 		getProductId.Deskripsi = productId.Deskripsi
 	}
-	if productId.Harga != "" {
+	if productId.Harga != 0 {
 		getProductId.Harga = productId.Harga
 	}
-	if productId.Status != "" {
+	if productId.Status == "tersedia" || productId.Status == "kosong" {
 		getProductId.Status = productId.Status
 	}
 	if productId.Gambar != "" {

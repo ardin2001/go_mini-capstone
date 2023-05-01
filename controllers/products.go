@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -76,9 +76,17 @@ func (p *ProductStructC) CreateProductController(c echo.Context) error {
 
 	product := models.Product{}
 	c.Bind(&product)
-	fmt.Println(product)
-	fmt.Println(product.Nama)
-	fmt.Println(product.Gambar, c.FormValue("nama"))
+
+	image, _ := c.FormFile("gambar")
+	filename, err := UploadImage(image)
+	if !err {
+		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+			Data:    nil,
+			Message: filename,
+			Status:  false,
+		})
+	}
+	product.Gambar = filename
 
 	_, check := p.productS.CreateProductService(&product)
 
@@ -145,39 +153,27 @@ func (p *ProductStructC) DeleteProductController(c echo.Context) error {
 	})
 }
 
-func UploadImage(c echo.Context) error {
-	name := c.FormValue("name")
-	email := c.FormValue("email")
-
-	//-----------
-	// Read file
-	//-----------
-
-	// Source
-	file, err := c.FormFile("file")
+func UploadImage(img *multipart.FileHeader) (string, bool) {
+	src, err := img.Open()
 	if err != nil {
-		return err
-	}
-	src, err := file.Open()
-	if err != nil {
-		return err
+		return "error upload image", false
 	}
 	defer src.Close()
 
 	// Destination
-	ext := filepath.Ext(file.Filename)
+	ext := filepath.Ext(img.Filename)
 	currentTime := time.Now().UnixNano()
 	newFileName := strconv.Itoa(int(currentTime)) + ext
-	dst, err := os.Create("image/" + newFileName)
+	dst, err := os.Create("images/" + newFileName)
 	if err != nil {
-		return err
+		return "error directory image", false
 	}
 	defer dst.Close()
 
 	// Copy
 	if _, err = io.Copy(dst, src); err != nil {
-		return err
+		return "error save image", false
 	}
 
-	return c.HTML(http.StatusOK, fmt.Sprintf("<p>File %s uploaded successfully with fields name=%s and email=%s.</p>", file.Filename, name, email))
+	return newFileName, true
 }
