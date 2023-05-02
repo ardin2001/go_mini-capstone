@@ -25,6 +25,10 @@ var (
 	productR = repositories.NewProductRepositories(db)
 	productS = services.NewProductServices(productR)
 	productC = controllers.NewProductControllers(productS)
+
+	cartR = repositories.NewCartRepositories(db)
+	cartS = services.NewCartServices(cartR)
+	cartC = controllers.NewCartControllers(cartS)
 )
 
 func StartApp() *echo.Echo {
@@ -48,6 +52,7 @@ func StartApp() *echo.Echo {
 	e.POST("/products", productC.CreateProductController, echojwt.WithConfig(config))
 	e.DELETE("/products/:id", productC.DeleteProductController, echojwt.WithConfig(config))
 	e.PUT("/products/:id", productC.UpdateProductController, echojwt.WithConfig(config))
+	e.GET("/carts", cartC.GetCartsController, echojwt.WithConfig(config))
 	// admin
 
 	e.POST("/users/login", userC.LoginUserController)
@@ -55,7 +60,6 @@ func StartApp() *echo.Echo {
 	e.POST("/users/registration", userC.CreateUserController)
 	e.DELETE("/users", userC.DeleteUserController, echojwt.WithConfig(config))
 	e.PUT("/users", userC.UpdateUserController, echojwt.WithConfig(config))
-
 	e.GET("/products/:id", productC.GetProductController, echojwt.WithConfig(config))
 	e.GET("/products", productC.GetProductsController, echojwt.WithConfig(config))
 

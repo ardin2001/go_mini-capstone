@@ -48,18 +48,18 @@ func (pr *ProductStructR) DeleteProductRepository(id string) error {
 	return check
 }
 
-func (pr *ProductStructR) CreateProductRepository(user *models.Product) (*models.Product, error) {
-	check := pr.DB.Save(user).Error
+func (pr *ProductStructR) CreateProductRepository(cart *models.Product) (*models.Product, error) {
+	check := pr.DB.Save(cart).Error
 	if check != nil {
 		return nil, check
 	}
-	return user, check
+	return cart, check
 }
 
-func (pr *ProductStructR) UpdateProductRepository(userId *models.Product, id string) (*models.Product, error) {
-	check := pr.DB.Save(userId).Error
+func (pr *ProductStructR) UpdateProductRepository(cartId *models.Product, id string) (*models.Product, error) {
+	check := pr.DB.Save(cartId).Error
 	if check != nil {
 		return nil, check
 	}
-	return userId, check
+	return cartId, check
 }

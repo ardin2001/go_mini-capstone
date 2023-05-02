@@ -12,6 +12,7 @@ type User struct {
 	Password string `json:"password" form:"password"`
 	Role     string `json:"role" form:"role"`
 	No_HP    string `json:"no_hp" form:"no_hp"`
+	Carts    []Cart `gorm:"foreignKey:UserId"`
 }
 
 type JwtCustomClaims struct {
