@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/ardin2001/go_mini-capstone/helpers"
 	"github.com/ardin2001/go_mini-capstone/middlewares"
@@ -12,6 +13,7 @@ import (
 
 type CartInterfaceC interface {
 	GetCartsController(c echo.Context) error
+	GetCartController(c echo.Context) error
 	CreateCartController(c echo.Context) error
 	UpdateCartController(c echo.Context) error
 	DeleteCartController(c echo.Context) error
@@ -28,11 +30,17 @@ func NewCartControllers(cartS services.CartInterfaceS) CartInterfaceC {
 }
 
 func (cc *CartStructC) GetCartsController(c echo.Context) error {
-	data, err := middlewares.AdminVerification(c)
-	if !err {
-		return data
+	var carts []models.Cart
+	var check error
+	_, err := middlewares.AdminVerification(c)
+	if err {
+		carts, check = cc.cartS.GetCartsService("")
+	} else {
+		data := middlewares.GetDataJWT(c)
+		id := strconv.Itoa(int(data.ID))
+		carts, check = cc.cartS.GetCartsService(id)
 	}
-	carts, check := cc.cartS.GetCartsService()
+
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
@@ -40,6 +48,28 @@ func (cc *CartStructC) GetCartsController(c echo.Context) error {
 			Status:  false,
 		})
 	}
+
+	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
+		Data:    carts,
+		Message: "Successfull get carts account",
+		Status:  true,
+	})
+}
+
+func (cc *CartStructC) GetCartController(c echo.Context) error {
+	data := middlewares.GetDataJWT(c)
+	user_id := strconv.Itoa(int(data.ID))
+	id := c.Param("id")
+	carts, check := cc.cartS.GetCartService(id, user_id)
+
+	if check != nil {
+		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+			Data:    nil,
+			Message: "err()",
+			Status:  false,
+		})
+	}
+
 	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
 		Data:    carts,
 		Message: "Successfull get carts account",
@@ -50,7 +80,8 @@ func (cc *CartStructC) GetCartsController(c echo.Context) error {
 func (cc *CartStructC) CreateCartController(c echo.Context) error {
 	cart := models.Cart{}
 	c.Bind(&cart)
-
+	data := middlewares.GetDataJWT(c)
+	cart.UserId = data.ID
 	_, check := cc.cartS.CreateCartService(&cart)
 
 	if check != nil {
@@ -68,16 +99,13 @@ func (cc *CartStructC) CreateCartController(c echo.Context) error {
 }
 
 func (cc *CartStructC) UpdateCartController(c echo.Context) error {
-	data, err := middlewares.AdminVerification(c)
-	if !err {
-		return data
-	}
-
 	id := c.Param("id")
 	cart := models.Cart{}
 	c.Bind(&cart)
 
-	dataCart, check := cc.cartS.UpdateCartService(&cart, id)
+	user := middlewares.GetDataJWT(c)
+	user_id := strconv.Itoa(int(user.ID))
+	dataCart, check := cc.cartS.UpdateCartService(&cart, id, user_id)
 
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
@@ -95,7 +123,9 @@ func (cc *CartStructC) UpdateCartController(c echo.Context) error {
 
 func (cc *CartStructC) DeleteCartController(c echo.Context) error {
 	id := c.Param("id")
-	check := cc.cartS.DeleteCartService(id)
+	user := middlewares.GetDataJWT(c)
+	user_id := strconv.Itoa(int(user.ID))
+	check := cc.cartS.DeleteCartService(id, user_id)
 
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{

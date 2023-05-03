@@ -34,7 +34,11 @@ func NewUserControllers(userS services.UserInterfaceS) UserInterfaceC {
 func (u *UserStructC) GetUsersController(c echo.Context) error {
 	data, err := middlewares.AdminVerification(c)
 	if !err {
-		return data
+		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+			Data:    nil,
+			Message: data.Error(),
+			Status:  false,
+		})
 	}
 
 	users, check := u.userS.GetUsersService()

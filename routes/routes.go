@@ -62,6 +62,10 @@ func StartApp() *echo.Echo {
 	e.PUT("/users", userC.UpdateUserController, echojwt.WithConfig(config))
 	e.GET("/products/:id", productC.GetProductController, echojwt.WithConfig(config))
 	e.GET("/products", productC.GetProductsController, echojwt.WithConfig(config))
+	e.GET("/carts/:id", cartC.GetCartController, echojwt.WithConfig(config))
+	e.POST("/carts", cartC.CreateCartController, echojwt.WithConfig(config))
+	e.DELETE("/carts/:id", cartC.DeleteCartController, echojwt.WithConfig(config))
+	e.PUT("/carts/:id", cartC.UpdateCartController, echojwt.WithConfig(config))
 
 	return e
 }

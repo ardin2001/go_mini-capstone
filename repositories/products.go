@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"errors"
+
 	"github.com/ardin2001/go_mini-capstone/models"
 	"gorm.io/gorm"
 )
@@ -44,6 +46,9 @@ func (pr *ProductStructR) GetProductRepository(id string) (*models.Product, erro
 }
 
 func (pr *ProductStructR) DeleteProductRepository(id string) error {
+	if err := pr.DB.Where("id = ?", id).Take(&models.Product{}).Error; err != nil {
+		return errors.New("not_found")
+	}
 	check := pr.DB.Delete(&models.Product{}, &id).Error
 	return check
 }

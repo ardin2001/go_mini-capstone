@@ -1,10 +1,9 @@
 package middlewares
 
 import (
-	"net/http"
+	"errors"
 	"os"
 
-	"github.com/ardin2001/go_mini-capstone/helpers"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
@@ -14,11 +13,7 @@ func AdminVerification(c echo.Context) (error, bool) {
 	godotenv.Load()
 	role := os.Getenv("ROLE_A")
 	if err.Role != role {
-		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
-			Data:    nil,
-			Message: "Cannot access this route",
-			Status:  false,
-		}), false
+		return errors.New("you do not have rights to access this route"), false
 	}
 	return nil, true
 }

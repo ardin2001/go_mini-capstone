@@ -71,12 +71,15 @@ func (p *ProductStructC) GetProductController(c echo.Context) error {
 func (p *ProductStructC) CreateProductController(c echo.Context) error {
 	data, err := middlewares.AdminVerification(c)
 	if !err {
-		return data
+		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+			Data:    nil,
+			Message: data.Error(),
+			Status:  false,
+		})
 	}
 
 	product := models.Product{}
 	c.Bind(&product)
-
 	image, _ := c.FormFile("gambar")
 	filename, err := UploadImage(image)
 	if !err {
@@ -107,7 +110,11 @@ func (p *ProductStructC) CreateProductController(c echo.Context) error {
 func (p *ProductStructC) UpdateProductController(c echo.Context) error {
 	data, err := middlewares.AdminVerification(c)
 	if !err {
-		return data
+		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+			Data:    nil,
+			Message: data.Error(),
+			Status:  false,
+		})
 	}
 
 	id := c.Param("id")
@@ -133,7 +140,11 @@ func (p *ProductStructC) UpdateProductController(c echo.Context) error {
 func (p *ProductStructC) DeleteProductController(c echo.Context) error {
 	data, err := middlewares.AdminVerification(c)
 	if !err {
-		return data
+		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+			Data:    nil,
+			Message: data.Error(),
+			Status:  false,
+		})
 	}
 
 	id := c.Param("id")

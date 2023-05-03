@@ -6,11 +6,11 @@ import (
 )
 
 type CartInterfaceS interface {
-	GetCartsService() ([]models.Cart, error)
-	GetCartService(id string) (*models.Cart, error)
+	GetCartsService(id string) ([]models.Cart, error)
+	GetCartService(id, user_id string) (*models.Cart, error)
 	CreateCartService(Cart *models.Cart) (*models.Cart, error)
-	UpdateCartService(CartId *models.Cart, id string) (*models.Cart, error)
-	DeleteCartService(id string) error
+	UpdateCartService(CartId *models.Cart, id, user_id string) (*models.Cart, error)
+	DeleteCartService(id, user_id string) error
 }
 
 type CartStructS struct {
@@ -23,8 +23,8 @@ func NewCartServices(cartR repositories.CartInterfaceR) CartInterfaceS {
 	}
 }
 
-func (cs *CartStructS) GetCartsService() ([]models.Cart, error) {
-	carts, err := cs.cartR.GetCartsRepository()
+func (cs *CartStructS) GetCartsService(id string) ([]models.Cart, error) {
+	carts, err := cs.cartR.GetCartsRepository(id)
 	if err != nil {
 		return nil, err
 	}
@@ -32,8 +32,8 @@ func (cs *CartStructS) GetCartsService() ([]models.Cart, error) {
 	return carts, nil
 }
 
-func (cs *CartStructS) GetCartService(id string) (*models.Cart, error) {
-	cart, err := cs.cartR.GetCartRepository(id)
+func (cs *CartStructS) GetCartService(id, user_id string) (*models.Cart, error) {
+	cart, err := cs.cartR.GetCartRepository(id, user_id)
 	if err != nil {
 		return nil, err
 	}
@@ -50,11 +50,15 @@ func (cs *CartStructS) CreateCartService(cart *models.Cart) (*models.Cart, error
 	return cartR, nil
 }
 
-func (cs *CartStructS) UpdateCartService(cartId *models.Cart, id string) (*models.Cart, error) {
-	getCartId, err := cs.cartR.GetCartRepository(id)
+func (cs *CartStructS) UpdateCartService(cartId *models.Cart, id, user_id string) (*models.Cart, error) {
+	getCartId, err := cs.cartR.GetCartRepository(id, user_id)
 
 	if err != nil {
 		return nil, err
+	}
+
+	if cartId.Jumlah != 0 {
+		getCartId.Jumlah = cartId.Jumlah
 	}
 
 	cart, err := cs.cartR.UpdateCartRepository(getCartId, id)
@@ -65,8 +69,8 @@ func (cs *CartStructS) UpdateCartService(cartId *models.Cart, id string) (*model
 	return cart, nil
 }
 
-func (cs *CartStructS) DeleteCartService(id string) error {
-	err := cs.cartR.DeleteCartRepository(id)
+func (cs *CartStructS) DeleteCartService(id, user_id string) error {
+	err := cs.cartR.DeleteCartRepository(id, user_id)
 	if err != nil {
 		return err
 	}
