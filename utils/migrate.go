@@ -16,4 +16,6 @@ func UserMigrate() {
 	DB.AutoMigrate(&models.User{})
 	DB.AutoMigrate(&models.Product{})
 	DB.AutoMigrate(&models.Cart{})
+	DB.AutoMigrate(&models.Transaction{})
+	DB.AutoMigrate(&models.TransactionDetail{})
 }

@@ -7,12 +7,13 @@ import (
 
 type User struct {
 	gorm.Model
-	Nama     string `json:"nama" form:"nama"`
-	Email    string `json:"email" form:"email"`
-	Password string `json:"password" form:"password"`
-	Role     string `json:"role" form:"role"`
-	No_HP    string `json:"no_hp" form:"no_hp"`
-	Carts    []Cart `gorm:"foreignKey:UserId"`
+	Nama         string        `json:"nama" form:"nama"`
+	Email        string        `json:"email" form:"email"`
+	Password     string        `json:"password" form:"password"`
+	Role         string        `json:"role" form:"role"`
+	No_HP        string        `json:"no_hp" form:"no_hp"`
+	Carts        []Cart        `gorm:"foreignKey:UserId"`
+	Transactions []Transaction `gorm:"foreignKey:UserId"`
 }
 
 type JwtCustomClaims struct {

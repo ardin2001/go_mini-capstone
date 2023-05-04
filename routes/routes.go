@@ -29,6 +29,14 @@ var (
 	cartR = repositories.NewCartRepositories(db)
 	cartS = services.NewCartServices(cartR)
 	cartC = controllers.NewCartControllers(cartS)
+
+	transactionR = repositories.NewTransactionRepositories(db)
+	transactionS = services.NewTransactionServices(transactionR)
+	transactionC = controllers.NewTransactionControllers(transactionS)
+
+	transactionDetailR = repositories.NewTransactionDetailRepositories(db)
+	transactionDetailS = services.NewTransactionDetailServices(transactionDetailR)
+	transactionDetailC = controllers.NewTransactionDetailControllers(transactionDetailS)
 )
 
 func StartApp() *echo.Echo {
@@ -66,6 +74,11 @@ func StartApp() *echo.Echo {
 	e.POST("/carts", cartC.CreateCartController, echojwt.WithConfig(config))
 	e.DELETE("/carts/:id", cartC.DeleteCartController, echojwt.WithConfig(config))
 	e.PUT("/carts/:id", cartC.UpdateCartController, echojwt.WithConfig(config))
+
+	// test
+	e.GET("/transactions", transactionC.GetTransactionsController, echojwt.WithConfig(config))
+	e.GET("/transactions/details", transactionDetailC.GetTransactionDetailsController, echojwt.WithConfig(config))
+	e.POST("/transactions", transactionC.CreateTransactionController, echojwt.WithConfig(config))
 
 	return e
 }
