@@ -25,7 +25,7 @@ func NewUserRepositories(db *gorm.DB) UserInterfaceR {
 
 func (us *UserStructR) GetUsersRepository() ([]models.User, error) {
 	var users []models.User
-	check := us.DB.Find(&users).Error
+	check := us.DB.Select("nama,email,role,no_hp").Find(&users).Error
 
 	if check != nil {
 		return nil, check

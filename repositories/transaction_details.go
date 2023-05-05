@@ -27,9 +27,9 @@ func (tdr *TransactionDetailStructR) GetTransactionDetailsRepository(id string) 
 	var transaction_details []models.TransactionDetail
 	var check error
 	if id == "" {
-		check = tdr.DB.Preload("Product").Preload("Transaction").Find(&transaction_details).Error
+		check = tdr.DB.Preload("Product").Find(&transaction_details).Error
 	} else {
-		check = tdr.DB.Where("user_id", id).Preload("Product").Preload("Transaction").Find(&transaction_details).Error
+		check = tdr.DB.Where("user_id", id).Preload("Product").Find(&transaction_details).Error
 	}
 	if check != nil {
 		return nil, check

@@ -16,7 +16,6 @@ type TransactionDetailInterfaceC interface {
 	// GetTransactionDetailController(c echo.Context) error
 	CreateTransactionDetailController(c echo.Context) error
 	// UpdateTransactionDetailController(c echo.Context) error
-	// DeleteTransactionDetailController(c echo.Context) error
 }
 
 type TransactionDetailStructC struct {
@@ -114,26 +113,6 @@ func (cc *TransactionDetailStructC) CreateTransactionDetailController(c echo.Con
 // 	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
 // 		Data:    dataCart,
 // 		Message: "Successfull update cart account",
-// 		Status:  true,
-// 	})
-// }
-
-// func (cc *CartStructC) DeleteCartController(c echo.Context) error {
-// 	id := c.Param("id")
-// 	user := middlewares.GetDataJWT(c)
-// 	user_id := strconv.Itoa(int(user.ID))
-// 	check := cc.cartS.DeleteCartService(id, user_id)
-
-// 	if check != nil {
-// 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
-// 			Data:    nil,
-// 			Message: "err()",
-// 			Status:  false,
-// 		})
-// 	}
-// 	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
-// 		Data:    id,
-// 		Message: "Successfull delete cart account",
 // 		Status:  true,
 // 	})
 // }

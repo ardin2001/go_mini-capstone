@@ -30,13 +30,13 @@ var (
 	cartS = services.NewCartServices(cartR)
 	cartC = controllers.NewCartControllers(cartS)
 
-	transactionR = repositories.NewTransactionRepositories(db)
-	transactionS = services.NewTransactionServices(transactionR)
-	transactionC = controllers.NewTransactionControllers(transactionS)
-
 	transactionDetailR = repositories.NewTransactionDetailRepositories(db)
 	transactionDetailS = services.NewTransactionDetailServices(transactionDetailR)
 	transactionDetailC = controllers.NewTransactionDetailControllers(transactionDetailS)
+
+	transactionR = repositories.NewTransactionRepositories(db)
+	transactionS = services.NewTransactionServices(transactionR)
+	transactionC = controllers.NewTransactionControllers(transactionS, transactionDetailS)
 )
 
 func StartApp() *echo.Echo {

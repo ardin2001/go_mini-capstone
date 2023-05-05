@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ardin2001/go_mini-capstone/configs"
 	"github.com/ardin2001/go_mini-capstone/helpers"
 	"github.com/ardin2001/go_mini-capstone/middlewares"
 	"github.com/ardin2001/go_mini-capstone/models"
@@ -17,16 +16,17 @@ type TransactionInterfaceC interface {
 	// GetTransactionController(c echo.Context) error
 	CreateTransactionController(c echo.Context) error
 	// UpdateTransactionController(c echo.Context) error
-	// DeleteTransactionController(c echo.Context) error
 }
 
 type TransactionStructC struct {
-	transactionS services.TransactionInterfaceS
+	transactionS       services.TransactionInterfaceS
+	transactionDetailS services.TransactionDetailInterfaceS
 }
 
-func NewTransactionControllers(transactionS services.TransactionInterfaceS) TransactionInterfaceC {
+func NewTransactionControllers(transactionS services.TransactionInterfaceS, transactionDetailS services.TransactionDetailInterfaceS) TransactionInterfaceC {
 	return &TransactionStructC{
 		transactionS,
+		transactionDetailS,
 	}
 }
 
@@ -97,8 +97,7 @@ func (tc *TransactionStructC) CreateTransactionController(c echo.Context) error 
 		transaction_details[i].TransactionId = transactions.ID
 	}
 
-	DB, _ := configs.InitDB()
-	check2 := DB.Create(&transaction_details).Error
+	_, check2 := tc.transactionDetailS.CreateTransactionDetailService(&transaction_details)
 	if check2 != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
@@ -108,7 +107,7 @@ func (tc *TransactionStructC) CreateTransactionController(c echo.Context) error 
 	}
 
 	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
-		Data:    transaction_details,
+		Data:    transactions,
 		Message: "Successfull create transaction_details",
 		Status:  true,
 	})
@@ -133,26 +132,6 @@ func (tc *TransactionStructC) CreateTransactionController(c echo.Context) error 
 // 	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
 // 		Data:    dataCart,
 // 		Message: "Successfull update cart account",
-// 		Status:  true,
-// 	})
-// }
-
-// func (cc *CartStructC) DeleteCartController(c echo.Context) error {
-// 	id := c.Param("id")
-// 	user := middlewares.GetDataJWT(c)
-// 	user_id := strconv.Itoa(int(user.ID))
-// 	check := cc.cartS.DeleteCartService(id, user_id)
-
-// 	if check != nil {
-// 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
-// 			Data:    nil,
-// 			Message: "err()",
-// 			Status:  false,
-// 		})
-// 	}
-// 	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
-// 		Data:    id,
-// 		Message: "Successfull delete cart account",
 // 		Status:  true,
 // 	})
 // }
