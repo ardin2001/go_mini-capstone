@@ -29,7 +29,7 @@ func (tr *TransactionStructR) GetTransactionsRepository(id string) ([]models.Tra
 	if id == "" {
 		check = tr.DB.Preload("User").Preload("TransactionDetail").Find(&transactions).Error
 	} else {
-		check = tr.DB.Where("user_id", id).Preload("User").Preload("TransactionDetails").Find(&transactions).Error
+		check = tr.DB.Where("user_id", id).Preload("User").Preload("TransactionDetails.Product").Find(&transactions).Error
 	}
 	if check != nil {
 		return nil, check

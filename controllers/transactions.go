@@ -42,6 +42,13 @@ func (tc *TransactionStructC) GetTransactionsController(c echo.Context) error {
 		transactions, check = tc.transactionS.GetTransactionsService(id)
 	}
 
+	for i := range transactions {
+		for j := range transactions[i].TransactionDetails {
+			transactions[i].JumlahBarang += transactions[i].TransactionDetails[j].Jumlah
+			transactions[i].TotalHarga += transactions[i].TransactionDetails[j].Product.Harga
+		}
+	}
+
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
