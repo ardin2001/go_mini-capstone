@@ -9,7 +9,7 @@ type TransactionInterfaceS interface {
 	GetTransactionsService(id string) ([]models.Transaction, error)
 	GetTransactionService(id, user_id string) (*models.Transaction, error)
 	CreateTransactionService(Transaction *models.Transaction) (*models.Transaction, error)
-	// UpdateTransactionService(TransactionId *models.Transaction, id, user_id string) (*models.Transaction, error)
+	UpdateTransactionService(TransactionId *models.Transaction, id, user_id string) (*models.Transaction, error)
 }
 
 type TransactionStructS struct {
@@ -28,6 +28,13 @@ func (ts *TransactionStructS) GetTransactionsService(id string) ([]models.Transa
 		return nil, err
 	}
 
+	for i := range transactions {
+		for j := range transactions[i].TransactionDetails {
+			transactions[i].JumlahBarang += transactions[i].TransactionDetails[j].Jumlah
+			transactions[i].TotalHarga += transactions[i].TransactionDetails[j].Product.Harga * transactions[i].TransactionDetails[j].Jumlah
+		}
+	}
+
 	return transactions, nil
 }
 
@@ -37,6 +44,10 @@ func (ts *TransactionStructS) GetTransactionService(id, user_id string) (*models
 		return nil, err
 	}
 
+	for j := range transaction.TransactionDetails {
+		transaction.JumlahBarang += transaction.TransactionDetails[j].Jumlah
+		transaction.TotalHarga += transaction.TransactionDetails[j].Product.Harga * transaction.TransactionDetails[j].Jumlah
+	}
 	return transaction, nil
 }
 
@@ -49,21 +60,24 @@ func (cs *TransactionStructS) CreateTransactionService(cart *models.Transaction)
 	return transactionR, nil
 }
 
-// func (cs *CartStructS) UpdateCartService(cartId *models.Transaction, id, user_id string) (*models.Transaction, error) {
-// 	getCartId, err := cs.cartR.GetCartRepository(id, user_id)
+func (ts *TransactionStructS) UpdateTransactionService(transactionId *models.Transaction, id, user_id string) (*models.Transaction, error) {
+	getTransactionId, err := ts.transactionR.GetTransactionRepository(id, user_id)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	if err != nil {
+		return nil, err
+	}
 
-// 	if cartId.Jumlah != 0 {
-// 		getCartId.Jumlah = cartId.Jumlah
-// 	}
+	if transactionId.BuktiTransaksi != "" {
+		getTransactionId.BuktiTransaksi = transactionId.BuktiTransaksi
+	}
+	if user_id == "1" {
+		getTransactionId.Status = transactionId.Status
+	}
 
-// 	cart, err := cs.cartR.UpdateCartRepository(getCartId, id)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	cart, err := ts.transactionR.UpdateTransactionRepository(getTransactionId, id)
+	if err != nil {
+		return nil, err
+	}
 
-// 	return cart, nil
-// }
+	return cart, nil
+}

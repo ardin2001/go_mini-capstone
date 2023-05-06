@@ -74,12 +74,14 @@ func StartApp() *echo.Echo {
 	e.POST("/carts", cartC.CreateCartController, echojwt.WithConfig(config))
 	e.DELETE("/carts/:id", cartC.DeleteCartController, echojwt.WithConfig(config))
 	e.PUT("/carts/:id", cartC.UpdateCartController, echojwt.WithConfig(config))
-
-	// test
 	e.GET("/transactions", transactionC.GetTransactionsController, echojwt.WithConfig(config))
 	e.GET("/transactions/:id", transactionC.GetTransactionController, echojwt.WithConfig(config))
 	e.GET("/transactions/details", transactionDetailC.GetTransactionDetailsController, echojwt.WithConfig(config))
 	e.POST("/transactions", transactionC.CreateTransactionController, echojwt.WithConfig(config))
+
+	// development route
+	e.DELETE("/test", controllers.DeleteCartBatchController)
+	e.PUT("/testransaksi/:id", transactionC.UpdateTransactionController, echojwt.WithConfig(config))
 
 	return e
 }

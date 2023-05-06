@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/ardin2001/go_mini-capstone/models"
 	"gorm.io/gorm"
@@ -63,10 +62,9 @@ func (cr *CartStructR) DeleteCartRepository(id, user_id string) error {
 		return errors.New("not_found")
 	}
 
-	check := cr.DB.Where("user_id", user_id).Delete(&models.Cart{}, &id).Error
-	fmt.Println(check, user_id)
+	check := cr.DB.Where("user_id", user_id).Take(&models.Cart{}).Delete(&models.Cart{}, &id).Error
 	if check != nil {
-		return errors.New("protected")
+		return errors.New("not_access")
 	}
 	return check
 }

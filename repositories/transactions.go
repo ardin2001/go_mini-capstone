@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"fmt"
+
 	"github.com/ardin2001/go_mini-capstone/models"
 	"gorm.io/gorm"
 )
@@ -9,7 +11,7 @@ type TransactionInterfaceR interface {
 	GetTransactionsRepository(id string) ([]models.Transaction, error)
 	GetTransactionRepository(id, user_id string) (*models.Transaction, error)
 	CreateTransactionRepository(Transaction *models.Transaction) (*models.Transaction, error)
-	// UpdateTransactionRepository(TransactionId *models.Transaction, id string) (*models.Transaction, error)
+	UpdateTransactionRepository(TransactionId *models.Transaction, id string) (*models.Transaction, error)
 }
 
 type TransactionStructR struct {
@@ -23,6 +25,7 @@ func NewTransactionRepositories(db *gorm.DB) TransactionInterfaceR {
 }
 
 func (tr *TransactionStructR) GetTransactionsRepository(id string) ([]models.Transaction, error) {
+	fmt.Println("masuk sini bos")
 	var transactions []models.Transaction
 	var check error
 	if id == "" {
@@ -39,7 +42,13 @@ func (tr *TransactionStructR) GetTransactionsRepository(id string) ([]models.Tra
 
 func (cr *TransactionStructR) GetTransactionRepository(id, user_id string) (*models.Transaction, error) {
 	var transaction models.Transaction
-	check := cr.DB.Where("user_id", user_id).Preload("User").Preload("TransactionDetails.Product").First(&transaction, id).Error
+	var check error
+	if user_id == "1" {
+		check = cr.DB.Preload("User").Preload("TransactionDetails.Product").First(&transaction, id).Error
+	} else {
+		check = cr.DB.Where("user_id", user_id).Preload("User").Preload("TransactionDetails.Product").First(&transaction, id).Error
+	}
+
 	if check != nil {
 		return nil, check
 	}
@@ -54,10 +63,10 @@ func (cr *TransactionStructR) CreateTransactionRepository(transaction *models.Tr
 	return transaction, check
 }
 
-// func (cr *TransactionStructR) UpdateCartRepository(cartId *models.Transaction, id string) (*models.Transaction, error) {
-// 	check := cr.DB.Save(cartId).Error
-// 	if check != nil {
-// 		return nil, check
-// 	}
-// 	return cartId, check
-// }
+func (cr *TransactionStructR) UpdateTransactionRepository(transactionId *models.Transaction, id string) (*models.Transaction, error) {
+	check := cr.DB.Save(transactionId).Error
+	if check != nil {
+		return nil, check
+	}
+	return transactionId, check
+}

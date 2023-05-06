@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -16,7 +15,7 @@ type TransactionInterfaceC interface {
 	GetTransactionsController(c echo.Context) error
 	GetTransactionController(c echo.Context) error
 	CreateTransactionController(c echo.Context) error
-	// UpdateTransactionController(c echo.Context) error
+	UpdateTransactionController(c echo.Context) error
 }
 
 type TransactionStructC struct {
@@ -32,7 +31,6 @@ func NewTransactionControllers(transactionS services.TransactionInterfaceS, tran
 }
 
 func (tc *TransactionStructC) GetTransactionsController(c echo.Context) error {
-	fmt.Println("GetTransactionsController")
 	var transactions []models.Transaction
 	var check error
 	_, err := middlewares.AdminVerification(c)
@@ -42,13 +40,6 @@ func (tc *TransactionStructC) GetTransactionsController(c echo.Context) error {
 		data := middlewares.GetDataJWT(c)
 		id := strconv.Itoa(int(data.ID))
 		transactions, check = tc.transactionS.GetTransactionsService(id)
-	}
-
-	for i := range transactions {
-		for j := range transactions[i].TransactionDetails {
-			transactions[i].JumlahBarang += transactions[i].TransactionDetails[j].Jumlah
-			transactions[i].TotalHarga += transactions[i].TransactionDetails[j].Product.Harga * transactions[i].TransactionDetails[j].Jumlah
-		}
 	}
 
 	if check != nil {
@@ -66,7 +57,6 @@ func (tc *TransactionStructC) GetTransactionsController(c echo.Context) error {
 }
 
 func (tc *TransactionStructC) GetTransactionController(c echo.Context) error {
-	fmt.Println("GetTransactionController")
 	data := middlewares.GetDataJWT(c)
 	user_id := strconv.Itoa(int(data.ID))
 	id := c.Param("id")
@@ -123,25 +113,40 @@ func (tc *TransactionStructC) CreateTransactionController(c echo.Context) error 
 	})
 }
 
-// func (cc *CartStructC) UpdateCartController(c echo.Context) error {
-// 	id := c.Param("id")
-// 	cart := models.Cart{}
-// 	c.Bind(&cart)
+func (tc *TransactionStructC) UpdateTransactionController(c echo.Context) error {
+	id := c.Param("id")
+	transaction := models.Transaction{}
+	data := middlewares.GetDataJWT(c)
+	if data.Role == "user" {
+		image, _ := c.FormFile("bukti_transaksi")
+		filename, err := UploadImage(image)
+		if !err {
+			return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+				Data:    nil,
+				Message: filename,
+				Status:  false,
+			})
+		}
+		transaction.BuktiTransaksi = filename
+	} else {
+		status, _ := strconv.ParseBool(c.FormValue("status"))
+		transaction.Status = status
+	}
 
-// 	user := middlewares.GetDataJWT(c)
-// 	user_id := strconv.Itoa(int(user.ID))
-// 	dataCart, check := cc.cartS.UpdateCartService(&cart, id, user_id)
+	user := middlewares.GetDataJWT(c)
+	user_id := strconv.Itoa(int(user.ID))
+	transactionId, check := tc.transactionS.UpdateTransactionService(&transaction, id, user_id)
 
-// 	if check != nil {
-// 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
-// 			Data:    nil,
-// 			Message: check.Error(),
-// 			Status:  false,
-// 		})
-// 	}
-// 	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
-// 		Data:    dataCart,
-// 		Message: "Successfull update cart account",
-// 		Status:  true,
-// 	})
-// }
+	if check != nil {
+		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+			Data:    nil,
+			Message: check.Error(),
+			Status:  false,
+		})
+	}
+	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
+		Data:    transactionId,
+		Message: "Successfull update transaction",
+		Status:  true,
+	})
+}

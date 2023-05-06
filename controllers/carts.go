@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ardin2001/go_mini-capstone/configs"
 	"github.com/ardin2001/go_mini-capstone/helpers"
 	"github.com/ardin2001/go_mini-capstone/middlewares"
 	"github.com/ardin2001/go_mini-capstone/models"
@@ -136,6 +137,27 @@ func (cc *CartStructC) DeleteCartController(c echo.Context) error {
 	}
 	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
 		Data:    id,
+		Message: "Successfull delete cart account",
+		Status:  true,
+	})
+}
+
+func DeleteCartBatchController(c echo.Context) error {
+	carts := []models.Cart{}
+	c.Bind(&carts)
+
+	DB, _ := configs.InitDB()
+	check := DB.Delete(&carts).Error
+
+	if check != nil {
+		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+			Data:    nil,
+			Message: check.Error(),
+			Status:  false,
+		})
+	}
+	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
+		Data:    carts,
 		Message: "Successfull delete cart account",
 		Status:  true,
 	})
