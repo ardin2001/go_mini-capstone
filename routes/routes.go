@@ -64,7 +64,7 @@ func StartApp() *echo.Echo {
 	// admin
 
 	e.POST("/users/login", userC.LoginUserController)
-	e.GET("/user", userC.GetUserController, echojwt.WithConfig(config))
+	e.GET("/users/me", userC.GetUserController, echojwt.WithConfig(config))
 	e.POST("/users/registration", userC.CreateUserController)
 	e.DELETE("/users", userC.DeleteUserController, echojwt.WithConfig(config))
 	e.PUT("/users", userC.UpdateUserController, echojwt.WithConfig(config))
