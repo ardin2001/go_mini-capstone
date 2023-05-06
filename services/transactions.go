@@ -7,10 +7,9 @@ import (
 
 type TransactionInterfaceS interface {
 	GetTransactionsService(id string) ([]models.Transaction, error)
-	// GetTransactionService(id, user_id string) (*models.Transaction, error)
+	GetTransactionService(id, user_id string) (*models.Transaction, error)
 	CreateTransactionService(Transaction *models.Transaction) (*models.Transaction, error)
 	// UpdateTransactionService(TransactionId *models.Transaction, id, user_id string) (*models.Transaction, error)
-	// DeleteTransactionService(id, user_id string) error
 }
 
 type TransactionStructS struct {
@@ -32,14 +31,14 @@ func (ts *TransactionStructS) GetTransactionsService(id string) ([]models.Transa
 	return transactions, nil
 }
 
-// func (cs *CartStructS) GetCartService(id, user_id string) (*models.Transaction, error) {
-// 	cart, err := cs.cartR.GetCartRepository(id, user_id)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+func (ts *TransactionStructS) GetTransactionService(id, user_id string) (*models.Transaction, error) {
+	transaction, err := ts.transactionR.GetTransactionRepository(id, user_id)
+	if err != nil {
+		return nil, err
+	}
 
-// 	return cart, nil
-// }
+	return transaction, nil
+}
 
 func (cs *TransactionStructS) CreateTransactionService(cart *models.Transaction) (*models.Transaction, error) {
 	transactionR, err := cs.transactionR.CreateTransactionRepository(cart)
@@ -67,13 +66,4 @@ func (cs *TransactionStructS) CreateTransactionService(cart *models.Transaction)
 // 	}
 
 // 	return cart, nil
-// }
-
-// func (cs *CartStructS) DeleteCartService(id, user_id string) error {
-// 	err := cs.cartR.DeleteCartRepository(id, user_id)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
 // }

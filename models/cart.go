@@ -11,4 +11,5 @@ type Cart struct {
 	Jumlah    int     `json:"jumlah" form:"jumlah"`
 	User      User    `json:"user"`
 	Product   Product `json:"product"`
+	ID        int     `json:"id" gorm:"-:all"`
 }

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -13,7 +14,7 @@ import (
 
 type TransactionInterfaceC interface {
 	GetTransactionsController(c echo.Context) error
-	// GetTransactionController(c echo.Context) error
+	GetTransactionController(c echo.Context) error
 	CreateTransactionController(c echo.Context) error
 	// UpdateTransactionController(c echo.Context) error
 }
@@ -31,6 +32,7 @@ func NewTransactionControllers(transactionS services.TransactionInterfaceS, tran
 }
 
 func (tc *TransactionStructC) GetTransactionsController(c echo.Context) error {
+	fmt.Println("GetTransactionsController")
 	var transactions []models.Transaction
 	var check error
 	_, err := middlewares.AdminVerification(c)
@@ -45,7 +47,7 @@ func (tc *TransactionStructC) GetTransactionsController(c echo.Context) error {
 	for i := range transactions {
 		for j := range transactions[i].TransactionDetails {
 			transactions[i].JumlahBarang += transactions[i].TransactionDetails[j].Jumlah
-			transactions[i].TotalHarga += transactions[i].TransactionDetails[j].Product.Harga
+			transactions[i].TotalHarga += transactions[i].TransactionDetails[j].Product.Harga * transactions[i].TransactionDetails[j].Jumlah
 		}
 	}
 
@@ -63,26 +65,27 @@ func (tc *TransactionStructC) GetTransactionsController(c echo.Context) error {
 	})
 }
 
-// func (cc *CartStructC) GetCartController(c echo.Context) error {
-// 	data := middlewares.GetDataJWT(c)
-// 	user_id := strconv.Itoa(int(data.ID))
-// 	id := c.Param("id")
-// 	carts, check := cc.cartS.GetCartService(id, user_id)
+func (tc *TransactionStructC) GetTransactionController(c echo.Context) error {
+	fmt.Println("GetTransactionController")
+	data := middlewares.GetDataJWT(c)
+	user_id := strconv.Itoa(int(data.ID))
+	id := c.Param("id")
+	carts, check := tc.transactionS.GetTransactionService(id, user_id)
 
-// 	if check != nil {
-// 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
-// 			Data:    nil,
-// 			Message: "err()",
-// 			Status:  false,
-// 		})
-// 	}
+	if check != nil {
+		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+			Data:    nil,
+			Message: check.Error(),
+			Status:  false,
+		})
+	}
 
-// 	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
-// 		Data:    carts,
-// 		Message: "Successfull get carts account",
-// 		Status:  true,
-// 	})
-// }
+	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
+		Data:    carts,
+		Message: "Successfull get carts account",
+		Status:  true,
+	})
+}
 
 func (tc *TransactionStructC) CreateTransactionController(c echo.Context) error {
 	transactions := models.Transaction{}
@@ -95,7 +98,7 @@ func (tc *TransactionStructC) CreateTransactionController(c echo.Context) error 
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -132,7 +135,7 @@ func (tc *TransactionStructC) CreateTransactionController(c echo.Context) error 
 // 	if check != nil {
 // 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 // 			Data:    nil,
-// 			Message: "err()",
+// 			Message: check.Error(),
 // 			Status:  false,
 // 		})
 // 	}

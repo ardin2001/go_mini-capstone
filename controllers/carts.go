@@ -44,7 +44,7 @@ func (cc *CartStructC) GetCartsController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -65,7 +65,7 @@ func (cc *CartStructC) GetCartController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -87,7 +87,7 @@ func (cc *CartStructC) CreateCartController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -110,7 +110,7 @@ func (cc *CartStructC) UpdateCartController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -130,7 +130,7 @@ func (cc *CartStructC) DeleteCartController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}

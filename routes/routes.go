@@ -77,6 +77,7 @@ func StartApp() *echo.Echo {
 
 	// test
 	e.GET("/transactions", transactionC.GetTransactionsController, echojwt.WithConfig(config))
+	e.GET("/transactions/:id", transactionC.GetTransactionController, echojwt.WithConfig(config))
 	e.GET("/transactions/details", transactionDetailC.GetTransactionDetailsController, echojwt.WithConfig(config))
 	e.POST("/transactions", transactionC.CreateTransactionController, echojwt.WithConfig(config))
 

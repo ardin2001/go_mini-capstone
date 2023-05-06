@@ -39,7 +39,7 @@ func (p *ProductStructC) GetProductsController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -57,7 +57,7 @@ func (p *ProductStructC) GetProductController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -96,7 +96,7 @@ func (p *ProductStructC) CreateProductController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -126,7 +126,7 @@ func (p *ProductStructC) UpdateProductController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -153,7 +153,7 @@ func (p *ProductStructC) DeleteProductController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}

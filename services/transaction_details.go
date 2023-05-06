@@ -9,8 +9,6 @@ type TransactionDetailInterfaceS interface {
 	GetTransactionDetailsService(id string) ([]models.TransactionDetail, error)
 	// GetTransactionDetailService(id, user_id string) (*models.TransactionDetail, error)
 	CreateTransactionDetailService(transactionDetail *[]models.TransactionDetail) (*[]models.TransactionDetail, error)
-	// UpdateTransactionDetailService(TransactionDetailId *models.TransactionDetail, id, user_id string) (*models.TransactionDetail, error)
-	// DeleteTransactionDetailService(id, user_id string) error
 }
 
 type TransactionDetailStructS struct {
@@ -49,31 +47,3 @@ func (cs *TransactionDetailStructS) CreateTransactionDetailService(transactionDe
 
 	return transactionDetailR, nil
 }
-
-// func (cs *TransactionDetailStructS) UpdateCartService(cartId *models.TransactionDetail, id, user_id string) (*models.TransactionDetail, error) {
-// 	getCartId, err := cs.cartR.GetCartRepository(id, user_id)
-
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	if cartId.Jumlah != 0 {
-// 		getCartId.Jumlah = cartId.Jumlah
-// 	}
-
-// 	cart, err := cs.cartR.UpdateCartRepository(getCartId, id)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return cart, nil
-// }
-
-// func (cs *TransactionDetailStructS) DeleteCartService(id, user_id string) error {
-// 	err := cs.cartR.DeleteCartRepository(id, user_id)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }

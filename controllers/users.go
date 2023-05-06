@@ -45,7 +45,7 @@ func (u *UserStructC) GetUsersController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -64,7 +64,7 @@ func (u *UserStructC) GetUserController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -84,7 +84,7 @@ func (u *UserStructC) CreateUserController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -106,7 +106,7 @@ func (u *UserStructC) UpdateUserController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
@@ -126,7 +126,7 @@ func (u *UserStructC) DeleteUserController(c echo.Context) error {
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
-			Message: "err()",
+			Message: check.Error(),
 			Status:  false,
 		})
 	}
