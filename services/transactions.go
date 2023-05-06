@@ -67,16 +67,31 @@ func (ts *TransactionStructS) UpdateTransactionService(transactionId *models.Tra
 		return nil, err
 	}
 
-	if transactionId.BuktiTransaksi != "" {
-		getTransactionId.BuktiTransaksi = transactionId.BuktiTransaksi
-	}
 	if user_role == "admin" {
 		getTransactionId.Status = transactionId.Status
+	} else {
+		if transactionId.BuktiTransaksi != "" {
+			getTransactionId.BuktiTransaksi = transactionId.BuktiTransaksi
+		}
+		if transactionId.Alamat != "" {
+			getTransactionId.Alamat = transactionId.Alamat
+		}
+		if transactionId.Ongkir != 0 {
+			getTransactionId.Ongkir = transactionId.Ongkir
+		}
+		if transactionId.Ekspedisi != "" {
+			getTransactionId.Ekspedisi = transactionId.Ekspedisi
+		}
 	}
 
 	cart, err := ts.transactionR.UpdateTransactionRepository(getTransactionId, id)
 	if err != nil {
 		return nil, err
+	}
+
+	for j := range getTransactionId.TransactionDetails {
+		getTransactionId.JumlahBarang += getTransactionId.TransactionDetails[j].Jumlah
+		getTransactionId.TotalHarga += getTransactionId.TransactionDetails[j].Product.Harga * getTransactionId.TransactionDetails[j].Jumlah
 	}
 
 	return cart, nil

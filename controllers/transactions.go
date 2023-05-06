@@ -8,6 +8,7 @@ import (
 	"github.com/ardin2001/go_mini-capstone/middlewares"
 	"github.com/ardin2001/go_mini-capstone/models"
 	"github.com/ardin2001/go_mini-capstone/services"
+	"github.com/ardin2001/go_mini-capstone/utils"
 	"github.com/labstack/echo/v4"
 )
 
@@ -132,23 +133,25 @@ func (tc *TransactionStructC) UpdateTransactionController(c echo.Context) error 
 	transaction := models.Transaction{}
 	data := middlewares.GetDataJWT(c)
 	if data.Role == "user" {
+		transaction.Tujuan = c.FormValue("tujuan")
+		ekspedisi, biaya := utils.ResponseData(transaction.Tujuan, "5")
+		transaction.Ongkir = biaya
+		transaction.Ekspedisi = ekspedisi
+		transaction.Alamat = c.FormValue("alamat")
 		image, err_image := c.FormFile("bukti_transaksi")
-		if err_image != nil {
-			return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
-				Data:    nil,
-				Message: err_image.Error(),
-				Status:  false,
-			})
+
+		if err_image == nil {
+			filename, err := UploadImage(image)
+			if !err {
+				return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+					Data:    nil,
+					Message: filename,
+					Status:  false,
+				})
+			}
+			transaction.BuktiTransaksi = filename
 		}
-		filename, err := UploadImage(image)
-		if !err {
-			return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
-				Data:    nil,
-				Message: filename,
-				Status:  false,
-			})
-		}
-		transaction.BuktiTransaksi = filename
+
 	} else {
 		status, _ := strconv.ParseBool(c.FormValue("status"))
 		transaction.Status = status

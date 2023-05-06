@@ -81,22 +81,17 @@ func (p *ProductStructC) CreateProductController(c echo.Context) error {
 	product := models.Product{}
 	c.Bind(&product)
 	image, err_image := c.FormFile("gambar")
-	if err_image != nil {
-		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
-			Data:    nil,
-			Message: err_image.Error(),
-			Status:  false,
-		})
+	if err_image == nil {
+		filename, err := UploadImage(image)
+		if !err {
+			return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+				Data:    nil,
+				Message: filename,
+				Status:  false,
+			})
+		}
+		product.Gambar = filename
 	}
-	filename, err := UploadImage(image)
-	if !err {
-		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
-			Data:    nil,
-			Message: filename,
-			Status:  false,
-		})
-	}
-	product.Gambar = filename
 
 	_, check := p.productS.CreateProductService(&product)
 
@@ -126,6 +121,18 @@ func (p *ProductStructC) UpdateProductController(c echo.Context) error {
 
 	id := c.Param("id")
 	product := models.Product{}
+	image, err_image := c.FormFile("gambar")
+	if err_image == nil {
+		filename, err := UploadImage(image)
+		if !err {
+			return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+				Data:    nil,
+				Message: filename,
+				Status:  false,
+			})
+		}
+		product.Gambar = filename
+	}
 	c.Bind(&product)
 
 	dataProduct, check := p.productS.UpdateProductService(&product, id)

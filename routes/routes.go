@@ -50,7 +50,7 @@ func StartApp() *echo.Echo {
 		},
 		SigningKey: []byte(dbHost),
 	}
-
+	e.Static("/images", "images/")
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
