@@ -36,7 +36,7 @@ var (
 
 	transactionR = repositories.NewTransactionRepositories(db)
 	transactionS = services.NewTransactionServices(transactionR)
-	transactionC = controllers.NewTransactionControllers(transactionS, transactionDetailS)
+	transactionC = controllers.NewTransactionControllers(transactionS, transactionDetailS, cartS)
 )
 
 func StartApp() *echo.Echo {
@@ -80,7 +80,6 @@ func StartApp() *echo.Echo {
 	e.POST("/transactions", transactionC.CreateTransactionController, echojwt.WithConfig(config))
 
 	// development route
-	e.DELETE("/test", controllers.DeleteCartBatchController)
 	e.PUT("/testransaksi/:id", transactionC.UpdateTransactionController, echojwt.WithConfig(config))
 
 	return e

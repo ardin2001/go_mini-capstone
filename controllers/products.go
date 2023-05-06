@@ -80,7 +80,14 @@ func (p *ProductStructC) CreateProductController(c echo.Context) error {
 
 	product := models.Product{}
 	c.Bind(&product)
-	image, _ := c.FormFile("gambar")
+	image, err_image := c.FormFile("gambar")
+	if err_image != nil {
+		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+			Data:    nil,
+			Message: err_image.Error(),
+			Status:  false,
+		})
+	}
 	filename, err := UploadImage(image)
 	if !err {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{

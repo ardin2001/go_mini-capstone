@@ -9,7 +9,7 @@ type TransactionInterfaceS interface {
 	GetTransactionsService(id string) ([]models.Transaction, error)
 	GetTransactionService(id, user_id string) (*models.Transaction, error)
 	CreateTransactionService(Transaction *models.Transaction) (*models.Transaction, error)
-	UpdateTransactionService(TransactionId *models.Transaction, id, user_id string) (*models.Transaction, error)
+	UpdateTransactionService(TransactionId *models.Transaction, id, user_id, user_role string) (*models.Transaction, error)
 }
 
 type TransactionStructS struct {
@@ -60,7 +60,7 @@ func (cs *TransactionStructS) CreateTransactionService(cart *models.Transaction)
 	return transactionR, nil
 }
 
-func (ts *TransactionStructS) UpdateTransactionService(transactionId *models.Transaction, id, user_id string) (*models.Transaction, error) {
+func (ts *TransactionStructS) UpdateTransactionService(transactionId *models.Transaction, id, user_id, user_role string) (*models.Transaction, error) {
 	getTransactionId, err := ts.transactionR.GetTransactionRepository(id, user_id)
 
 	if err != nil {
@@ -70,7 +70,7 @@ func (ts *TransactionStructS) UpdateTransactionService(transactionId *models.Tra
 	if transactionId.BuktiTransaksi != "" {
 		getTransactionId.BuktiTransaksi = transactionId.BuktiTransaksi
 	}
-	if user_id == "1" {
+	if user_role == "admin" {
 		getTransactionId.Status = transactionId.Status
 	}
 

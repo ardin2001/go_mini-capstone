@@ -7,7 +7,6 @@ import (
 
 type TransactionDetailInterfaceS interface {
 	GetTransactionDetailsService(id string) ([]models.TransactionDetail, error)
-	// GetTransactionDetailService(id, user_id string) (*models.TransactionDetail, error)
 	CreateTransactionDetailService(transactionDetail *[]models.TransactionDetail) (*[]models.TransactionDetail, error)
 }
 
@@ -29,15 +28,6 @@ func (tds *TransactionDetailStructS) GetTransactionDetailsService(id string) ([]
 
 	return transactionDetails, nil
 }
-
-// func (cs *TransactionDetailStructS) GetCartService(id, user_id string) (*models.TransactionDetail, error) {
-// 	cart, err := cs.cartR.GetCartRepository(id, user_id)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return cart, nil
-// }
 
 func (cs *TransactionDetailStructS) CreateTransactionDetailService(transactionDetail *[]models.TransactionDetail) (*[]models.TransactionDetail, error) {
 	transactionDetailR, err := cs.transactionDetailR.CreateTransactionDetailRepository(transactionDetail)

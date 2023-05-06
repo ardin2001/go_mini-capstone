@@ -21,12 +21,14 @@ type TransactionInterfaceC interface {
 type TransactionStructC struct {
 	transactionS       services.TransactionInterfaceS
 	transactionDetailS services.TransactionDetailInterfaceS
+	cartS              services.CartInterfaceS
 }
 
-func NewTransactionControllers(transactionS services.TransactionInterfaceS, transactionDetailS services.TransactionDetailInterfaceS) TransactionInterfaceC {
+func NewTransactionControllers(transactionS services.TransactionInterfaceS, transactionDetailS services.TransactionDetailInterfaceS, cartS services.CartInterfaceS) TransactionInterfaceC {
 	return &TransactionStructC{
 		transactionS,
 		transactionDetailS,
+		cartS,
 	}
 }
 
@@ -80,6 +82,7 @@ func (tc *TransactionStructC) GetTransactionController(c echo.Context) error {
 func (tc *TransactionStructC) CreateTransactionController(c echo.Context) error {
 	transactions := models.Transaction{}
 	transaction_details := []models.TransactionDetail{}
+	carts := []models.Cart{}
 
 	c.Bind(&transaction_details)
 	data := middlewares.GetDataJWT(c)
@@ -94,6 +97,8 @@ func (tc *TransactionStructC) CreateTransactionController(c echo.Context) error 
 	}
 
 	for i := range transaction_details {
+		carts = append(carts, models.Cart{})
+		carts[i].ID = uint(transaction_details[i].CartId)
 		transaction_details[i].TransactionId = transactions.ID
 	}
 
@@ -102,6 +107,15 @@ func (tc *TransactionStructC) CreateTransactionController(c echo.Context) error 
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
 			Data:    nil,
 			Message: check2.Error(),
+			Status:  false,
+		})
+	}
+
+	err_del := tc.cartS.DeleteBatchService(strconv.Itoa(int(data.ID)), &carts)
+	if err_del != nil {
+		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+			Data:    nil,
+			Message: err_del.Error(),
 			Status:  false,
 		})
 	}
@@ -118,7 +132,14 @@ func (tc *TransactionStructC) UpdateTransactionController(c echo.Context) error 
 	transaction := models.Transaction{}
 	data := middlewares.GetDataJWT(c)
 	if data.Role == "user" {
-		image, _ := c.FormFile("bukti_transaksi")
+		image, err_image := c.FormFile("bukti_transaksi")
+		if err_image != nil {
+			return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
+				Data:    nil,
+				Message: err_image.Error(),
+				Status:  false,
+			})
+		}
 		filename, err := UploadImage(image)
 		if !err {
 			return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
@@ -135,7 +156,7 @@ func (tc *TransactionStructC) UpdateTransactionController(c echo.Context) error 
 
 	user := middlewares.GetDataJWT(c)
 	user_id := strconv.Itoa(int(user.ID))
-	transactionId, check := tc.transactionS.UpdateTransactionService(&transaction, id, user_id)
+	transactionId, check := tc.transactionS.UpdateTransactionService(&transaction, id, user_id, user.Role)
 
 	if check != nil {
 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{

@@ -13,9 +13,7 @@ import (
 
 type TransactionDetailInterfaceC interface {
 	GetTransactionDetailsController(c echo.Context) error
-	// GetTransactionDetailController(c echo.Context) error
 	CreateTransactionDetailController(c echo.Context) error
-	// UpdateTransactionDetailController(c echo.Context) error
 }
 
 type TransactionDetailStructC struct {
@@ -54,27 +52,6 @@ func (tdc *TransactionDetailStructC) GetTransactionDetailsController(c echo.Cont
 	})
 }
 
-// func (cc *CartStructC) GetCartController(c echo.Context) error {
-// 	data := middlewares.GetDataJWT(c)
-// 	user_id := strconv.Itoa(int(data.ID))
-// 	id := c.Param("id")
-// 	carts, check := cc.cartS.GetCartService(id, user_id)
-
-// 	if check != nil {
-// 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
-// 			Data:    nil,
-// 			Message: "err()",
-// 			Status:  false,
-// 		})
-// 	}
-
-// 	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
-// 		Data:    carts,
-// 		Message: "Successfull get carts account",
-// 		Status:  true,
-// 	})
-// }
-
 func (cc *TransactionDetailStructC) CreateTransactionDetailController(c echo.Context) error {
 	transaction_details := []models.TransactionDetail{}
 	c.Bind(&transaction_details)
@@ -93,26 +70,3 @@ func (cc *TransactionDetailStructC) CreateTransactionDetailController(c echo.Con
 		Status:  true,
 	})
 }
-
-// func (cc *CartStructC) UpdateCartController(c echo.Context) error {
-// 	id := c.Param("id")
-// 	cart := models.Cart{}
-// 	c.Bind(&cart)
-
-// 	user := middlewares.GetDataJWT(c)
-// 	user_id := strconv.Itoa(int(user.ID))
-// 	dataCart, check := cc.cartS.UpdateCartService(&cart, id, user_id)
-
-// 	if check != nil {
-// 		return helpers.Response(c, http.StatusBadRequest, helpers.ResponseModel{
-// 			Data:    nil,
-// 			Message: "err()",
-// 			Status:  false,
-// 		})
-// 	}
-// 	return helpers.Response(c, http.StatusOK, helpers.ResponseModel{
-// 		Data:    dataCart,
-// 		Message: "Successfull update cart account",
-// 		Status:  true,
-// 	})
-// }

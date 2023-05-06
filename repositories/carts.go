@@ -13,6 +13,7 @@ type CartInterfaceR interface {
 	CreateCartRepository(Cart *models.Cart) (*models.Cart, error)
 	DeleteCartRepository(id, id_user string) error
 	UpdateCartRepository(CartId *models.Cart, id string) (*models.Cart, error)
+	DeleteBatchRepository(user_id string, carts *[]models.Cart) error
 }
 
 type CartStructR struct {
@@ -75,4 +76,13 @@ func (cr *CartStructR) UpdateCartRepository(cartId *models.Cart, id string) (*mo
 		return nil, check
 	}
 	return cartId, check
+}
+
+func (cr *CartStructR) DeleteBatchRepository(user_id string, carts *[]models.Cart) error {
+	check := cr.DB.Where("user_id", user_id).Delete(&carts).Error
+
+	if check != nil {
+		return check
+	}
+	return nil
 }

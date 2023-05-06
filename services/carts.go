@@ -11,6 +11,7 @@ type CartInterfaceS interface {
 	CreateCartService(Cart *models.Cart) (*models.Cart, error)
 	UpdateCartService(CartId *models.Cart, id, user_id string) (*models.Cart, error)
 	DeleteCartService(id, user_id string) error
+	DeleteBatchService(user_id string, carts *[]models.Cart) error
 }
 
 type CartStructS struct {
@@ -71,6 +72,15 @@ func (cs *CartStructS) UpdateCartService(cartId *models.Cart, id, user_id string
 
 func (cs *CartStructS) DeleteCartService(id, user_id string) error {
 	err := cs.cartR.DeleteCartRepository(id, user_id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (cs *CartStructS) DeleteBatchService(user_id string, carts *[]models.Cart) error {
+	err := cs.cartR.DeleteBatchRepository(user_id, carts)
 	if err != nil {
 		return err
 	}

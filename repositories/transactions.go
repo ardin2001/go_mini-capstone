@@ -1,8 +1,6 @@
 package repositories
 
 import (
-	"fmt"
-
 	"github.com/ardin2001/go_mini-capstone/models"
 	"gorm.io/gorm"
 )
@@ -25,7 +23,6 @@ func NewTransactionRepositories(db *gorm.DB) TransactionInterfaceR {
 }
 
 func (tr *TransactionStructR) GetTransactionsRepository(id string) ([]models.Transaction, error) {
-	fmt.Println("masuk sini bos")
 	var transactions []models.Transaction
 	var check error
 	if id == "" {
